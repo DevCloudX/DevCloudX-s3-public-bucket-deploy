@@ -43,11 +43,12 @@ jobs:
         run: |
           terraform apply -auto-approve -var="bucket_name=${{ github.event.inputs.bucket_name }}"
 
-      - name: Install AWS CLI
+      - name: Install or update AWS CLI
         run: |
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip awscliv2.zip
-          sudo ./aws/install
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install --update
+            
 
       - name: Show S3 Bucket Details
         env:
