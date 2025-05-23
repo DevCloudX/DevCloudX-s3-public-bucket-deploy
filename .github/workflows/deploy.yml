@@ -43,27 +43,3 @@ jobs:
         run: |
           terraform apply -auto-approve -var="bucket_name=${{ github.event.inputs.bucket_name }}"
 
-      - name: Install or update AWS CLI
-        run: |
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
-            sudo ./aws/install --update
-            
-
-      - name: Show S3 Bucket Details
-        env:
-          AWS_ACCESS_KEY_ID: ${{ github.event.inputs.aws_access_key }}
-          AWS_SECRET_ACCESS_KEY: ${{ github.event.inputs.aws_secret_key }}
-          AWS_DEFAULT_REGION: us-east-1
-        run: |
-          echo "Bucket Location:"
-          aws s3api get-bucket-location --bucket ${{ github.event.inputs.bucket_name }}
-
-          echo "Bucket Policy:"
-          aws s3api get-bucket-policy --bucket ${{ github.event.inputs.bucket_name }} || echo "No policy found"
-
-          echo "Bucket ACL:"
-          aws s3api get-bucket-acl --bucket ${{ github.event.inputs.bucket_name }}
-
-          echo "Bucket Tags:"
-          aws s3api get-bucket-tagging --bucket ${{ github.event.inputs.bucket_name }} || echo "No tags found"
