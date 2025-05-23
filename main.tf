@@ -1,24 +1,19 @@
-variable "bucket_name" {
-  description = "S3 bucket name"
-  type        = string
-}
-
-variable "aws_access_key" {
-  description = "AWS Access Key ID"
-  type        = string
-  sensitive   = true
-}
-
-variable "aws_secret_key" {
-  description = "AWS Secret Access Key"
-  type        = string
-  sensitive   = true
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
 }
 
 provider "aws" {
-  region           = "us-east-1"
-  access_key       = var.aws_access_key
-  secret_access_key = var.aws_secret_key
+  region = "us-east-1" # You can change the region as needed
+}
+
+variable "bucket_name" {
+  description = "Name of the S3 bucket"
+  type        = string
 }
 
 resource "aws_s3_bucket" "public_bucket" {
@@ -43,14 +38,16 @@ resource "aws_s3_bucket_policy" "public_policy" {
   bucket = aws_s3_bucket.public_bucket.id
 
   policy = jsonencode({
-    Version = "2012-10-17"
+    Version = "2012-10-17",
     Statement = [
       {
-        Sid       = "PublicReadGetObject"
-        Effect    = "Allow"
-        Principal = "*"
-        Action    = ["s3:GetObject"]
-        Resource  = "${aws_s3_bucket.public_bucket.arn}/*"
+        Sid       = "PublicReadGetObject",
+        Effect    = "Allow",
+        Principal = "*",
+        Action    = [
+          "s3:GetObject"
+        ],
+        Resource = "${aws_s3_bucket.public_bucket.arn}/*"
       }
     ]
   })
